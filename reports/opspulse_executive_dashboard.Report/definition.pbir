@@ -2,7 +2,7 @@
   "version": "4.0",
   "datasetReference": {
     "byPath": {
-      "path": "../opspulse_dashboardopspulse_executive.SemanticModel"
+      "path": "../opspulse_executive_dashboard.SemanticModel"
     }
   }
 }

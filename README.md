@@ -40,6 +40,11 @@ automatically by DAX from whatever is selected. Details: [docs/powerbi_dashboard
 
 Every dashboard figure was cross-checked against independent SQL queries on the same database.
 
+**Project documents**
+- [Project journal](docs/project_journal.md): every step, problems fixed, key numbers and interview talking points
+- [Project flowchart](docs/project_flowchart.html): the whole build on one page (download and open in a browser)
+- [Power BI guide](docs/powerbi_dashboard_guide.md): data model, all DAX measures and the validation report
+
 ## 2. Business Problem
 
 Enterprise IT departments handle large volumes of incidents and service requests.
@@ -109,6 +114,9 @@ OPSPULSE aims to address these challenges through a unified intelligence and aut
 | 9. AI data | `src/generate_ticket_text.py` | Writes realistic, user-style ticket text (typos, urgency, misleading words); 12.3% of tickets were routed to the wrong team |
 | 10. AI classifier | `src/train_classifier.py`, `src/semantic_classifier.py` | Predicts category, priority and correct team; compares keyword ML with a free semantic AI model (BGE-small, runs locally) |
 | 11. Workforce | `sql/workforce.sql`, `src/workforce_analytics.py` | Technician scorecard, workload fairness and team capacity: Service Desk technicians carry 1.9x the load of Desktop Support |
+| 12. Similar tickets | `src/similar_tickets.py` | For any new ticket: the most similar past tickets, the team that usually fixes it, the likely fix and the typical time |
+| 13. Root cause | `src/root_cause_analysis.py` | Groups tickets into 28 recurring problems by meaning (no labels), ranks problem candidates by impact, tests for spikes, and shows the March/August SLA dips were systemic |
+| 14. SLA risk | `src/sla_risk_prediction.py` | Early warning for tickets likely to breach; tested on unseen months, a simple risk table (AUC 0.74) beat machine learning (0.68) |
 
 ### How to run
 
@@ -134,6 +142,10 @@ AI ticket classifier (free, runs locally; the first run downloads a ~70 MB open-
 python src/generate_ticket_text.py
 python src/train_classifier.py
 python src/semantic_classifier.py
+python src/similar_tickets.py                                        # evaluate + examples
+python src/similar_tickets.py "outlook keeps asking for my password"  # any ticket
+python src/root_cause_analysis.py                                    # recurring problems
+python src/sla_risk_prediction.py                                    # breach early warning
 ```
 
 ### AI ticket classifier results
@@ -151,6 +163,10 @@ is better (70.3% vs 58.6%), because urgency lives in specific words like "urgent
 hybrid: semantic AI for category and routing, keywords for urgency.
 
 ![Model comparison](reports/ai/model_comparison.png)
+
+**Similar-ticket search** (same free model, searching 2,245 resolved tickets by meaning, tested on unseen wording):
+the closest past ticket is the same kind of problem 76.7% of the time, so its fix applies; the suggested team is
+right 89.2% of the time, better than the original human routing (87.2%), and it would correct 67 of 80 misrouted tickets.
 
 Then open `reports/opspulse_executive_dashboard_v2.pbix` in Power BI Desktop.
 
@@ -206,10 +222,10 @@ Then open `reports/opspulse_executive_dashboard_v2.pbix` in Power BI Desktop.
 - [x] AI incident classification
 - [ ] AI ticket summarisation
 - [ ] Knowledge-base assistant
-- [ ] AI resolution recommendations
-- [ ] Root cause analysis
+- [x] AI resolution recommendations
+- [x] Root cause analysis
 - [ ] REST API integration
-- [ ] SLA risk prediction
+- [x] SLA risk prediction
 - [ ] AI operations assistant
 - [ ] Platform integration and testing
 - [ ] Final demonstration and deployment
@@ -258,7 +274,7 @@ The objective is to demonstrate practical capabilities in:
 
 ## 11. Development Status
 
-**Current status: Phase 1 complete (data pipeline, SQL analytics, Power BI executive dashboard). Automated monthly reporting and a free AI ticket classifier (94.9% category accuracy on unseen wording) added. Workforce analytics added. Next: similar-ticket search and resolution suggestions.**
+**Current status: Phase 1 complete (data pipeline, SQL analytics, Power BI executive dashboard). Automated monthly reporting and a free AI ticket classifier (94.9% category accuracy on unseen wording) added. Workforce analytics, similar-ticket search, root cause analysis and SLA risk early warning added. Next: alerts and API, then a demo web app.**
 
 This is an actively developed portfolio project. Features will be marked complete only after implementation and testing.
 

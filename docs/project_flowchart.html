@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OPSPULSE: project flow</title>
+<style>
+  :root { --bg:#f7f8fa; --card:#ffffff; --border:#d5dae1; --text:#1f2937; --muted:#64748b; --accent:#1d4ed8; --accent-bg:#e6effd; --mono:Consolas, "Courier New", monospace; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg:#0f172a; --card:#1e293b; --border:#334155; --text:#e2e8f0; --muted:#94a3b8; --accent:#93c5fd; --accent-bg:#1e3a8a; }
+  }
+  body { margin:0; background:var(--bg); color:var(--text); font-family:"Segoe UI", system-ui, sans-serif; }
+  main { max-width:860px; margin:0 auto; padding:32px 20px 48px; }
+  h1 { font-size:26px; font-weight:600; margin:0 0 6px; }
+  .lead { color:var(--muted); margin:0 0 24px; }
+  .ph { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:16px 18px; }
+  .ph.next { background:transparent; border-style:dashed; }
+  .hd { display:flex; align-items:center; gap:10px; margin-bottom:8px; }
+  .tag { font-size:12px; padding:2px 9px; border-radius:6px; background:var(--accent-bg); color:var(--accent); }
+  .next .tag { background:transparent; border:1px solid var(--border); color:var(--muted); }
+  .ttl { font-size:17px; font-weight:600; }
+  .row { display:grid; grid-template-columns:230px 1fr; gap:4px 16px; padding:9px 0; border-top:1px solid var(--border); }
+  .row:first-of-type { border-top:none; }
+  .f { font-family:var(--mono); font-size:13px; color:var(--accent); word-break:break-word; }
+  .d { font-size:14px; line-height:1.5; }
+  .k { font-size:13px; color:var(--muted); line-height:1.5; }
+  .ar { text-align:center; color:var(--muted); font-size:22px; line-height:1; margin:6px 0; }
+  .chips { display:flex; flex-wrap:wrap; gap:8px; }
+  .chip { font-size:13px; padding:4px 10px; border-radius:6px; border:1px dashed var(--border); color:var(--muted); }
+  footer { margin-top:24px; font-size:13px; color:var(--muted); }
+  @media (max-width:600px) { .row { grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+<main>
+<h1>OPSPULSE: what we've built</h1>
+<p class="lead">AI-powered IT operations intelligence portfolio project. Each step's output feeds the next one: the same 3,000 incidents, with the same numbers checked at every stage.</p>
+
+<div class="ph"><div class="hd"><span class="tag">Phase 1</span><span class="ttl">Setup</span></div>
+<div class="row"><div class="f">GitHub + VS Code</div><div><div class="d">Created the repo and opened it in VS Code with Git Bash</div><div class="k">Python 3.12 on Windows</div></div></div>
+<div class="row"><div class="f">.venv + requirements.txt</div><div><div class="d">Private Python environment with pandas, numpy, openpyxl, matplotlib, scikit-learn, fastembed</div><div class="k">Fixed a network error on the first install with retries</div></div></div>
+</div>
+<div class="ar">&darr;</div>
+
+<div class="ph"><div class="hd"><span class="tag">Phase 2</span><span class="ttl">Data engineering</span></div>
+<div class="row"><div class="f">generate_data.py</div><div><div class="d">3,060 fake but realistic incidents, deliberately messy</div><div class="k">data/raw/incidents_raw.csv &middot; duplicates, blanks, mixed dates, "p1" vs "Priority 1"</div></div></div>
+<div class="row"><div class="f">explore_data.py</div><div><div class="d">First look: shape, column types, missing values</div><div class="k">Learned what needed cleaning</div></div></div>
+<div class="row"><div class="f">clean_data.py</div><div><div class="d">Removed 60 duplicates, fixed priorities, parsed both date formats, flagged 28 impossible dates, added resolution_hours and sla_met</div><div class="k">incidents_clean.csv &middot; 3,000 rows, 134 still open</div></div></div>
+<div class="row"><div class="f">schema.sql + load_database.py</div><div><div class="d">Normalised SQLite database</div><div class="k">opspulse.db &middot; incidents, priorities, assignment_groups</div></div></div>
+</div>
+<div class="ar">&darr;</div>
+
+<div class="ph"><div class="hd"><span class="tag">Phase 3</span><span class="ttl">SQL analytics</span></div>
+<div class="row"><div class="f">analytics_basic.sql</div><div><div class="d">GROUP BY and JOINs: volume and SLA by priority, group, category</div><div class="k">Run with run_query.py</div></div></div>
+<div class="row"><div class="f">analytics_advanced.sql</div><div><div class="d">CTEs and window functions: LAG trend, running total, RANK, ROW_NUMBER</div><div class="k">SLA dips in March 75.4% and August 77.1%; P1 only 77.3%</div></div></div>
+</div>
+<div class="ar">&darr;</div>
+
+<div class="ph"><div class="hd"><span class="tag">Phase 4</span><span class="ttl">Power BI dashboard</span></div>
+<div class="row"><div class="f">export_for_powerbi.py</div><div><div class="d">Source workbook for the dashboard</div><div class="k">opspulse_dashboard_data.xlsx</div></div></div>
+<div class="row"><div class="f">Data model + DAX</div><div><div class="d">Calendar table, 52 measures: SLA %, breaches, month-over-month, auto-written insights</div><div class="k">Fixed a DAX trap: blank counted as 0 gave 488 breaches instead of 326</div></div></div>
+<div class="row"><div class="f">Design iterations</div><div><div class="d">3 pages &rarr; one-page draft &rarr; dark executive layout &rarr; audit fixes</div><div class="k">Filter banner, target-line fix, colour rules &middot; opspulse_executive_dashboard_v2.pbix + .pbip</div></div></div>
+<div class="row"><div class="f">Validation</div><div><div class="d">Every KPI cross-checked: pandas = SQL = DAX</div><div class="k">3,000 incidents &middot; 326 breaches &middot; 88.5% SLA &middot; 134 open</div></div></div>
+</div>
+<div class="ar">&darr;</div>
+
+<div class="ph"><div class="hd"><span class="tag">Phase 5</span><span class="ttl">Sharing and automated reporting</span></div>
+<div class="row"><div class="f">GitHub + README</div><div><div class="d">Public portfolio with screenshot, results and how-to-run</div><div class="k">github.com/vijaygopi2912/opspulse-it-operations-platform</div></div></div>
+<div class="row"><div class="f">generate_report.py</div><div><div class="d">One command builds the monthly management report</div><div class="k">Excel (6 sheets) + 2-page PDF &middot; 123 tickets open over 30 days</div></div></div>
+</div>
+<div class="ar">&darr;</div>
+
+<div class="ph"><div class="hd"><span class="tag">Phase 6</span><span class="ttl">AI ticket classifier (free)</span></div>
+<div class="row"><div class="f">generate_ticket_text.py</div><div><div class="d">Realistic user-style ticket text: typos, urgency, tricky wording</div><div class="k">tickets_with_text.csv &middot; 368 tickets (12.3%) sent to the wrong team</div></div></div>
+<div class="row"><div class="f">train_classifier.py</div><div><div class="d">Keyword ML (TF-IDF + Logistic Regression)</div><div class="k">100% on familiar wording, only 60.2% on new wording; priority 70.3%</div></div></div>
+<div class="row"><div class="f">semantic_classifier.py</div><div><div class="d">Free local AI model (BGE-small embeddings) that understands meaning</div><div class="k">Zero-shot 84.6%, trained 94.9%; catches all misrouted test tickets</div></div></div>
+</div>
+<div class="ar">&darr;</div>
+
+<div class="ph"><div class="hd"><span class="tag">Phase 7</span><span class="ttl">Workforce analytics</span></div>
+<div class="row"><div class="f">workforce.sql</div><div><div class="d">Technician scorecard, load vs team average (AVG OVER PARTITION BY), team capacity</div><div class="k">Run with run_query.py</div></div></div>
+<div class="row"><div class="f">workforce_analytics.py</div><div><div class="d">Manager workbook and charts with findings</div><div class="k">Service Desk carries 1.9x Desktop Support's load per technician; work is fair inside teams</div></div></div>
+</div>
+<div class="ar">&darr;</div>
+
+<div class="ph next"><div class="hd"><span class="tag">Next</span><span class="ttl">Still to do (all free)</span></div>
+<div class="chips"><span class="chip">Similar tickets</span><span class="chip">Root cause analysis</span><span class="chip">SLA risk prediction</span><span class="chip">Alerts and API</span><span class="chip">Demo web app</span><span class="chip">Final polish</span></div>
+</div>
+
+<footer>Details, problems fixed and interview notes: docs/project_journal.md</footer>
+</main>
+</body>
+</html>

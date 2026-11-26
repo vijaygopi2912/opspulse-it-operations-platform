@@ -1,0 +1,13 @@
+{
+  "test_tickets": 623,
+  "searchable_past_tickets": 2245,
+  "category_from_similar_tickets": 0.891,
+  "closest_ticket_same_problem": 0.767,
+  "suggested_team_correct": 0.892,
+  "original_human_routing_correct": 0.872,
+  "misrouted_tickets": 80,
+  "misrouted_that_suggestion_fixes": 67,
+  "disagreements_flagged": 133,
+  "flags_where_suggestion_is_right": 0.504,
+  "average_top_similarity": 0.833
+}

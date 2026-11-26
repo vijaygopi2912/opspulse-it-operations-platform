@@ -211,6 +211,32 @@ URGENCY = {
 URGENCY_RATE = {"P1": 0.85, "P2": 0.65, "P3": 0.5, "P4": 0.6}
 WRONG_URGENCY_RATE = 0.10  # e.g. a P4 ticket written as "URGENT"
 
+# How support teams actually fixed each kind of problem (written in the resolution notes).
+# Used by similar_tickets.py to suggest a fix for new tickets.
+RESOLUTIONS = {
+    "VPN": ["Reset the VPN profile and reinstalled the GlobalProtect client.", "Cleared cached VPN credentials and re-synced the account.", "Moved the user to a less busy VPN gateway."],
+    "Wi-Fi": ["Re-joined the device to the corporate wireless profile.", "Restarted the access point serving the area.", "Updated the laptop's wireless driver."],
+    "Switch outage": ["Replaced the failed switch module and restored the uplink.", "Power-cycled the floor switch after a firmware fault.", "Re-patched the cabinet after a loose uplink cable."],
+    "Slow connection": ["Moved traffic off a saturated uplink to the backup link.", "Reset the network adapter and cleared the DNS cache.", "Applied QoS for Teams traffic on the site router."],
+    "Laptop": ["Replaced the faulty battery under warranty.", "Gave the user a loaner and sent the laptop for repair.", "Cleaned the fan and updated the BIOS to stop overheating."],
+    "Printer": ["Cleared the paper jam and replaced the worn roller.", "Restarted the print spooler and re-mapped the printer.", "Replaced the toner cartridge and recalibrated the printer."],
+    "Monitor": ["Replaced the display cable.", "Updated the graphics driver and reset display settings.", "Replaced the faulty monitor."],
+    "Docking station": ["Updated the docking station firmware.", "Replaced the docking station.", "Reinstalled the dock's USB drivers."],
+    "Office 365": ["Repaired the Office installation and cleared its cache.", "Re-activated the Microsoft 365 licence.", "Reset the Teams and OneDrive clients and signed in again."],
+    "ERP": ["Cleared the user's SAP session and reset their profile.", "Applied the vendor patch for the posting error.", "Rebuilt the report index to speed up month-end runs."],
+    "Browser": ["Cleared the browser cache and reset its settings.", "Installed the internal root certificate.", "Added the portal to the browser compatibility list."],
+    "Installation request": ["Installed the software from the company catalogue.", "Deployed the approved package through the software centre.", "Granted temporary admin rights for the installation."],
+    "Password reset": ["Reset the password and confirmed MFA enrolment.", "Fixed self-service reset by updating the user's phone number.", "Synced the new password across all systems."],
+    "Account locked": ["Unlocked the account; a phone was retrying an old password.", "Unlocked the account and reset the password.", "Re-enabled the account after HR confirmation."],
+    "New access request": ["Granted access after manager approval.", "Added the user to the correct security group.", "Provisioned the role in the target system."],
+    "Outlook": ["Rebuilt the Outlook profile.", "Repaired the mailbox data file.", "Cleared saved credentials and re-authenticated Outlook."],
+    "Shared mailbox": ["Granted full access to the shared mailbox.", "Re-added the shared mailbox in Outlook.", "Archived old items to free mailbox space."],
+    "Spam": ["Tuned the spam filter and blocked the sender domain.", "Added the supplier to the allow list.", "Blocked the bulk sender for the user."],
+    "Phishing": ["Blocked the sender and removed the email from all mailboxes.", "Reset the password and checked sign-ins after the click.", "Confirmed with the security team that nothing was compromised."],
+    "Antivirus": ["Updated antivirus definitions and ran a full scan.", "Restored the false-positive file and added an exclusion.", "Removed the detected malware and rescanned clean."],
+    "Suspicious login": ["Revoked sessions, reset the password and enforced MFA.", "Confirmed the sign-in was legitimate travel.", "Blocked the IP address and reviewed mailbox rules."],
+}
+
 SIGN_OFFS = ["", "", "", " Thanks", " Thank you", " Regards, {name}", " Thanks, {name}", " Sent from my iPhone"]
 NAMES = ["Ahmed", "Fatima", "Ravi", "Sarah", "Mohammed", "Anita", "James", "Layla", "Arjun", "Noura"]
 
@@ -261,11 +287,16 @@ def main():
     written = [write_ticket(s, p) for s, p in zip(df["subcategory"], df["priority"])]
     df["description"] = [w[0] for w in written]
     df["template_id"] = [w[1] for w in written]
+    # Resolution notes for tickets that were resolved. A separate random generator is used so the
+    # ticket descriptions above stay exactly the same as before (saved AI embeddings stay valid).
+    note_rng = random.Random(SEED + 1000)
+    df["resolution_note"] = [note_rng.choice(RESOLUTIONS[s]) if pd.notna(r) else ""
+                             for s, r in zip(df["subcategory"], df["resolved_at"])]
     df["correct_group"] = df["category"].map(CORRECT_GROUP)
     df["misrouted"] = (df["assignment_group"] != df["correct_group"]).astype(int)
 
     cols = ["incident_id", "opened_at", "description", "priority", "category", "subcategory",
-            "assignment_group", "correct_group", "misrouted", "template_id"]
+            "assignment_group", "correct_group", "misrouted", "template_id", "resolution_note"]
     df[cols].to_csv(OUT_FILE, index=False)
 
     print(f"Wrote {len(df)} tickets to {OUT_FILE}")

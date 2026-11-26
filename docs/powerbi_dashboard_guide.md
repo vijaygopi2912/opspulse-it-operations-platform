@@ -10,11 +10,12 @@ One consolidated, single-page ITSM executive dashboard built on the OPSPULSE inc
 | File | What it is |
 |---|---|
 | `reports/opspulse_executive_dashboard_v2.pbix` | **Final dashboard** (with the audit fixes), single file, open in Power BI Desktop |
-| `reports/opspulse_executive_dashboard.pbix` | First version of the executive dashboard, before the audit fixes |
+| `reports/opspulse_executive_dashboard.pbip` (+ `.Report`, `.SemanticModel` folders) | Same final report as a Power BI Project: model (TMDL), pages and visuals as text files, Git-friendly |
+| `reports/opspulse_executive_dashboard.png` | Screenshot of the final dashboard, no filters |
 | `reports/opspulse_dashboard_filtered_example.png` | Screenshot with Security Operations selected, showing the filtered-view banner |
-| `reports/opspulse_dashboardopspulse_executive.pbip` (+ `.Report`, `.SemanticModel` folders) | Same report as a Power BI Project: model (TMDL), pages and visuals as text files, Git-friendly |
-| `reports/backup/opspulse_dashboard_BACKUP_before_upgrade.pbix` | Untouched copy of the dashboard before the upgrade |
-| `reports/opspulse_dashboard.pbix` | Earlier version (left as it was) |
+| `reports/backup/opspulse_executive_dashboard_v1.pbix` | First executive version, before the audit fixes |
+| `reports/backup/opspulse_dashboard_one_page_draft.pbix` | The earlier one-page draft (white theme) |
+| `reports/backup/opspulse_dashboard_BACKUP_before_upgrade.pbix` | Untouched copy taken before the executive redesign |
 | `reports/opspulse_dashboard_data.xlsx` | Data source (created by `src/export_for_powerbi.py`) |
 | `reports/_old_visuals_backup/` | Old visual definitions moved aside during the rebuild. Safe to delete |
 

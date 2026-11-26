@@ -3,7 +3,7 @@
   "artifacts": [
     {
       "report": {
-        "path": "opspulse_dashboardopspulse_executive.Report"
+        "path": "opspulse_executive_dashboard.Report"
       }
     }
   ],
