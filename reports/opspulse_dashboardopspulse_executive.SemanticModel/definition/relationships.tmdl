@@ -1,0 +1,28 @@
+relationship AutoDetected_d4c60c89-96d4-4203-b0c3-a8f538ba5b1d
+	fromColumn: Incidents.priority
+	toColumn: Priorities.priority
+
+relationship 1d1d109d-c8e1-4acf-b448-32bc4b9cdda7
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Incidents.opened_at
+	toColumn: LocalDateTable_1c85f829-c2d2-460c-811a-07073d8f7c9e.Date
+
+relationship 5a8300b0-1356-4fcc-84e3-6f886ef8dfe0
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Incidents.resolved_at
+	toColumn: LocalDateTable_79810f05-66d4-447f-a996-eaacb7e067ef.Date
+
+relationship c026890e-76eb-4592-8c3e-a71b34038cd7
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Incidents.opened_month
+	toColumn: LocalDateTable_5a1e8cea-2588-4004-9596-07b76fb084f2.Date
+
+relationship 4a2571fb-7055-4a70-aa6e-150766c70f2b
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Incidents.opened_date
+	toColumn: LocalDateTable_672af70a-481a-4221-b2f2-6a4d8715b2a4.Date
+
+relationship b6d462a2-f1b5-4953-a407-7ca69ca10499
+	fromColumn: Incidents.opened_date
+	toColumn: Calendar.Date
+

@@ -1,0 +1,100 @@
+{
+  "version": "1.1.0",
+  "diagrams": [
+    {
+      "ordinal": 0,
+      "scrollPosition": {
+        "x": 0,
+        "y": 0
+      },
+      "nodes": [
+        {
+          "location": {
+            "x": 568,
+            "y": 86
+          },
+          "nodeIndex": "Groups",
+          "nodeLineageTag": "d3b8a7d0-ef98-448c-a7aa-c734b0b0f451",
+          "size": {
+            "height": 128,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 334,
+            "y": -50
+          },
+          "nodeIndex": "Incidents",
+          "nodeLineageTag": "f286e178-8d1d-499b-b449-83d214e555e5",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 50,
+            "y": 36
+          },
+          "nodeIndex": "Priorities",
+          "nodeLineageTag": "5fc9f84f-ba43-408e-bfb5-64a55c9cecec",
+          "size": {
+            "height": 128,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 802,
+            "y": 74
+          },
+          "nodeIndex": "Calendar",
+          "nodeLineageTag": "d21cce61-df41-4027-a63b-68b77db0104b",
+          "size": {
+            "height": 152,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 1086,
+            "y": 86
+          },
+          "nodeIndex": "Insights",
+          "nodeLineageTag": "54c31213-e0a7-4c7a-bf7c-74bb63efb2c3",
+          "size": {
+            "height": 128,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 1320,
+            "y": 50
+          },
+          "nodeIndex": "Refresh Info",
+          "nodeLineageTag": "d6203691-e536-459d-a80c-825a6bcc75f0",
+          "size": {
+            "height": 200,
+            "width": 234
+          },
+          "zIndex": 0
+        }
+      ],
+      "name": "All tables",
+      "zoomValue": 71.333333333333343,
+      "pinKeyFieldsToTop": false,
+      "showExtraHeaderInfo": false,
+      "hideKeyFieldsWhenCollapsed": false,
+      "tablesLocked": false
+    }
+  ],
+  "selectedDiagram": "All tables",
+  "defaultDiagram": "All tables"
+}

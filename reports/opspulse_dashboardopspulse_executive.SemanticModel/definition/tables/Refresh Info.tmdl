@@ -1,0 +1,15 @@
+table 'Refresh Info'
+	isHidden
+	lineageTag: d6203691-e536-459d-a80c-825a6bcc75f0
+
+	column 'Last Refresh'
+		dataType: dateTime
+		formatString: dd mmm yyyy hh:nn
+		lineageTag: 707ab86c-7ed8-46d4-baae-e713c2f5d3b1
+		summarizeBy: none
+		sourceColumn: [Last Refresh]
+
+	partition 'Refresh Info' = calculated
+		mode: import
+		source = ROW("Last Refresh", NOW())
+

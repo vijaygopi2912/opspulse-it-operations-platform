@@ -1,0 +1,33 @@
+table Groups
+	lineageTag: d3b8a7d0-ef98-448c-a7aa-c734b0b0f451
+
+	column group_id
+		dataType: int64
+		formatString: 0
+		lineageTag: 99f8cb4d-d59d-498e-aaa3-06540066ced0
+		summarizeBy: sum
+		sourceColumn: group_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column group_name
+		dataType: string
+		lineageTag: de41fcd0-699a-47f6-8251-cfb5592dd7f5
+		summarizeBy: none
+		sourceColumn: group_name
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Groups = m
+		mode: import
+		source =
+				let
+				    Source = Excel.Workbook(File.Contents("C:\Users\sathya\projects\opspulse-it-operations-platform\reports\opspulse_dashboard_data.xlsx"), null, true),
+				    Groups_Sheet = Source{[Item="Groups",Kind="Sheet"]}[Data],
+				    #"Promoted Headers" = Table.PromoteHeaders(Groups_Sheet, [PromoteAllScalars=true]),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"group_id", Int64.Type}, {"group_name", type text}})
+				in
+				    #"Changed Type"
+
+	annotation PBI_ResultType = Table
+

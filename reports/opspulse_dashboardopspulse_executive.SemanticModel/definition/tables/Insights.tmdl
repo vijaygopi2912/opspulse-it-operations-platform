@@ -1,0 +1,33 @@
+table Insights
+	lineageTag: 54c31213-e0a7-4c7a-bf7c-74bb63efb2c3
+
+	column Area
+		dataType: string
+		lineageTag: 27b8d21a-caea-4ffd-a700-721c978995d0
+		summarizeBy: none
+		sourceColumn: [Area]
+		sortByColumn: Order
+
+	column Order
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: c63bf7c1-3075-4b0b-9520-286d78f768e8
+		summarizeBy: none
+		sourceColumn: [Order]
+
+	partition Insights = calculated
+		mode: import
+		source =
+				DATATABLE(
+				    "Area", STRING, "Order", INTEGER,
+				    {
+				        {"Volume trend", 1},
+				        {"SLA trend", 2},
+				        {"Breach hotspot", 3},
+				        {"Demand driver", 4},
+				        {"Priority risk", 5},
+				        {"Weakest month", 6}
+				    }
+				)
+

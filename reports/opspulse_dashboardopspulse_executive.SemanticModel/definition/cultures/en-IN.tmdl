@@ -1,0 +1,189 @@
+cultureInfo en-IN
+
+	linguisticMetadata =
+			{
+			  "Version": "2.0.0",
+			  "Language": "en-US",
+			  "Entities": {
+			    "incidents.avg_resolution_hours": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Incidents",
+			          "ConceptualProperty": "Avg Resolution Hours"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Avg hrs": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        },
+			        {
+			          "Avg resolution (hrs)": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "incidents.insight_finding": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Incidents",
+			          "ConceptualProperty": "Insight Finding"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Finding (calculated from current selection)": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "incidents.sla_target_hrs": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Incidents",
+			          "ConceptualProperty": "SLA Target Hrs"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "SLA target (hrs)": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "incidents.assignment_group": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Incidents",
+			          "ConceptualProperty": "assignment_group"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Assignment group": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "incidents.total_incidents": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Incidents",
+			          "ConceptualProperty": "Total Incidents"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Incidents": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "incidents.open_incidents": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Incidents",
+			          "ConceptualProperty": "Open Incidents"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Open": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "incidents.sla_met_": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Incidents",
+			          "ConceptualProperty": "SLA Met %"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "SLA %": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "incidents.sla_breaches": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Incidents",
+			          "ConceptualProperty": "SLA Breaches"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Breaches": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    }
+			  }
+			}
+		contentType: json
+

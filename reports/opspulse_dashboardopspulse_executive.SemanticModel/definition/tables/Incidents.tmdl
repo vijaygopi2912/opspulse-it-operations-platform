@@ -1,0 +1,505 @@
+table Incidents
+	lineageTag: f286e178-8d1d-499b-b449-83d214e555e5
+
+	measure 'Total Incidents' = COUNTROWS(Incidents)
+		formatString: #,0
+		lineageTag: 3d3650f8-36b2-4530-9544-39a803cb7098
+
+	measure 'Open Incidents' = CALCULATE([Total Incidents], Incidents[is_open] = 1)
+		formatString: #,0
+		lineageTag: 53e11a65-fc6a-40db-8d8c-d92c23a9e2e4
+
+	measure 'SLA Met %' = DIVIDE(SUM(Incidents[sla_met]), COUNT(Incidents[sla_met]))
+		formatString: 0.0%
+		lineageTag: dfb59ee3-6791-4e39-99cb-0b09a0935e1d
+
+	measure 'SLA Breaches' = COUNTROWS(FILTER(Incidents, Incidents[sla_met] = 0 && NOT(ISBLANK(Incidents[sla_met]))))
+		formatString: 0
+		lineageTag: fdeee951-846a-4426-80dd-b23586a60dc9
+
+	measure 'Avg Resolution Hours' = AVERAGE(Incidents[resolution_hours])
+		formatString: 0.00
+		lineageTag: 712af54b-19a9-4706-a7eb-c458b8159774
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Reopen Rate' = DIVIDE(CALCULATE([Total Incidents], Incidents[reopen_count] > 0), [Total Incidents])
+		formatString: 0.0%
+		lineageTag: a07a4e08-e095-473f-bef7-3fad64802145
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Closed Incidents' = CALCULATE([Total Incidents], Incidents[is_open] = 0)
+		formatString: #,0
+		displayFolder: KPIs
+		lineageTag: 3db1f869-db85-470a-962f-c867ceff3f14
+
+	measure 'Incident Closure Rate' = DIVIDE([Closed Incidents], [Total Incidents])
+		formatString: 0.0%
+		displayFolder: KPIs
+		lineageTag: bbe44a53-3faf-4d2c-9d19-bbf23a5537d9
+
+	measure 'Open Share' = DIVIDE([Open Incidents], [Total Incidents])
+		formatString: 0.0%
+		displayFolder: KPIs
+		lineageTag: a9f97a27-0fac-46e4-9b47-854d016bf31f
+
+	measure 'Breach Rate' = DIVIDE([SLA Breaches], COUNT(Incidents[sla_met]))
+		formatString: 0.0%
+		displayFolder: KPIs
+		lineageTag: 05d20241-8819-49ea-8828-8fd78a8ad0f7
+
+	measure 'SLA Target' = 0.9
+		formatString: 0%
+		displayFolder: KPIs
+		lineageTag: d81b0408-b2e3-4885-946a-e654f621320d
+
+	measure 'SLA Target Hrs' = SUM(Priorities[sla_target_hours])
+		formatString: 0
+		displayFolder: KPIs
+		lineageTag: 0dc6e003-7190-4588-80ac-4c4a375f848e
+
+	measure 'Latest Month' = MAX(Calendar[MonthStart])
+		formatString: mmm yyyy
+		displayFolder: Time Intelligence
+		lineageTag: 64d91fc4-d67a-46d0-aced-fe73efdcedac
+
+	measure 'Prior Month' = EDATE([Latest Month], -1)
+		formatString: mmm yyyy
+		displayFolder: Time Intelligence
+		lineageTag: f87fd53e-f2c1-4ea5-8724-3c45b011481c
+
+	measure 'Current Month Incidents' =
+			VAR mm = [Latest Month]
+			RETURN CALCULATE([Total Incidents], REMOVEFILTERS(Calendar), Calendar[MonthStart] = mm)
+		formatString: #,0
+		displayFolder: Time Intelligence
+		lineageTag: 633e1259-8494-499a-bd9e-8ec0a8f2e016
+
+	measure 'Previous Month Incidents' =
+			VAR mm = [Prior Month]
+			RETURN CALCULATE([Total Incidents], REMOVEFILTERS(Calendar), Calendar[MonthStart] = mm)
+		formatString: #,0
+		displayFolder: Time Intelligence
+		lineageTag: 18e3f995-d51b-496b-ad75-d72cd8505068
+
+	measure 'MoM Incident Growth %' = DIVIDE([Current Month Incidents] - [Previous Month Incidents], [Previous Month Incidents])
+		formatString: +0.0%;-0.0%;0.0%
+		displayFolder: Time Intelligence
+		lineageTag: 378ad0b4-bcb0-4321-9e96-e35e6649b424
+
+	measure 'Current Month SLA %' =
+			VAR mm = [Latest Month]
+			RETURN CALCULATE([SLA Met %], REMOVEFILTERS(Calendar), Calendar[MonthStart] = mm)
+		formatString: 0.0%
+		displayFolder: Time Intelligence
+		lineageTag: d88cd752-c2d0-446c-acbc-2bab4d143450
+
+	measure 'Previous Month SLA %' =
+			VAR mm = [Prior Month]
+			RETURN CALCULATE([SLA Met %], REMOVEFILTERS(Calendar), Calendar[MonthStart] = mm)
+		formatString: 0.0%
+		displayFolder: Time Intelligence
+		lineageTag: 43aa5a27-5a50-4c53-afb1-87318651986c
+
+	measure 'MoM SLA Change (pts)' =
+			VAR a = [Current Month SLA %]
+			VAR b = [Previous Month SLA %]
+			RETURN IF(ISBLANK(a) || ISBLANK(b), BLANK(), (a - b) * 100)
+		formatString: +0.0;-0.0;0.0
+		displayFolder: Time Intelligence
+		lineageTag: 33e4e8a2-5934-4928-8baa-0479faba27d6
+
+	measure 'Current Month Avg Resolution' =
+			VAR mm = [Latest Month]
+			RETURN CALCULATE([Avg Resolution Hours], REMOVEFILTERS(Calendar), Calendar[MonthStart] = mm)
+		formatString: 0.00
+		displayFolder: Time Intelligence
+		lineageTag: 54f474e7-12d7-48ae-bbae-f89573b30a40
+
+	measure 'Previous Month Avg Resolution' =
+			VAR mm = [Prior Month]
+			RETURN CALCULATE([Avg Resolution Hours], REMOVEFILTERS(Calendar), Calendar[MonthStart] = mm)
+		formatString: 0.00
+		displayFolder: Time Intelligence
+		lineageTag: d46dc36c-0dcc-4930-aee9-9f91c7841138
+
+	measure 'MoM Resolution Change %' = DIVIDE([Current Month Avg Resolution] - [Previous Month Avg Resolution], [Previous Month Avg Resolution])
+		formatString: +0.0%;-0.0%;0.0%
+		displayFolder: Time Intelligence
+		lineageTag: f99bd603-b4e0-4b15-9439-56868c4ced1e
+
+	measure 'Label Incidents' =
+			VAR x = [MoM Incident Growth %]
+			RETURN IF(ISBLANK(x), "No prior month in selection", IF(x >= 0, "▲ ", "▼ ") & FORMAT(ABS(x), "0.0%") & "  ·  " & FORMAT([Latest Month], "mmm") & " vs " & FORMAT([Prior Month], "mmm"))
+		displayFolder: Labels
+		lineageTag: 99139e25-0541-4437-8f52-e52d8b342bfa
+
+	measure 'Label Open' = FORMAT([Open Share], "0.0%") & " of all incidents"
+		displayFolder: Labels
+		lineageTag: 39d703b6-8f89-4d96-a303-3c1d2244195c
+
+	measure 'Label Closed' = FORMAT([Incident Closure Rate], "0.0%") & " closure rate"
+		displayFolder: Labels
+		lineageTag: 539e7943-fb50-4bc5-a92d-f09d02826461
+
+	measure 'Label SLA' =
+			VAR x = [MoM SLA Change (pts)]
+			RETURN IF(ISBLANK(x), "Target " & FORMAT([SLA Target], "0%"), IF(x >= 0, "▲ ", "▼ ") & FORMAT(ABS(x), "0.0") & " pts  ·  " & FORMAT([Latest Month], "mmm") & " vs " & FORMAT([Prior Month], "mmm"))
+		displayFolder: Labels
+		lineageTag: cb6269da-d352-4653-86ab-25c5317e1c70
+
+	measure 'Label Breaches' = FORMAT([Breach Rate], "0.0%") & " of SLA-measured tickets"
+		displayFolder: Labels
+		lineageTag: de097167-1719-4010-830f-223f98920b3c
+
+	measure 'Label Resolution' =
+			VAR x = [MoM Resolution Change %]
+			RETURN IF(ISBLANK(x), "No prior month in selection", IF(x >= 0, "▲ ", "▼ ") & FORMAT(ABS(x), "0.0%") & "  ·  " & FORMAT([Latest Month], "mmm") & " vs " & FORMAT([Prior Month], "mmm"))
+		displayFolder: Labels
+		lineageTag: 6d50f74c-b2b7-4c40-afee-9a0e2cb8d359
+
+	measure 'Color Incidents Delta' = IF([MoM Incident Growth %] > 0, "#F59E0B", "#22C55E")
+		displayFolder: Colors
+		lineageTag: 62b08235-a63a-46f2-b80b-b5d9403d4970
+
+	measure 'Color SLA Delta' = IF([MoM SLA Change (pts)] >= 0, "#22C55E", "#EF4444")
+		displayFolder: Colors
+		lineageTag: b9b99565-ec17-4d52-99c9-f38d854dbc97
+
+	measure 'Color Resolution Delta' = IF([MoM Resolution Change %] > 0, "#F59E0B", "#22C55E")
+		displayFolder: Colors
+		lineageTag: dbad1760-d2bb-4082-90be-7f32f882128a
+
+	measure 'SLA Status Color' =
+			VAR s = [SLA Met %]
+			RETURN IF(ISBLANK(s), "#64748B", IF(s >= [SLA Target], "#22C55E", IF(s >= [SLA Target] - 0.05, "#F59E0B", "#EF4444")))
+		displayFolder: Colors
+		lineageTag: b27bc4ae-2fb0-4d41-8e8a-199b8c735167
+
+	measure 'State Color' = SWITCH(MAX(Incidents[state]), "Closed", "#3B82F6", "Resolved", "#22C55E", "In Progress", "#F59E0B", "On Hold", "#EF4444", "#64748B")
+		displayFolder: Colors
+		lineageTag: 4828c0b1-3e59-4c18-bbd4-81118c3c4f33
+
+	measure 'Insight Volume' =
+			VAR cur = [Current Month Incidents]
+			VAR prv = [Previous Month Incidents]
+			VAR gr = [MoM Incident Growth %]
+			RETURN IF(ISBLANK(prv) || prv = 0, "Not enough monthly history in the current selection.", "Incident volume " & IF(gr >= 0, "increased ", "decreased ") & FORMAT(ABS(gr), "0.0%") & " in " & FORMAT([Latest Month], "mmmm") & " (" & cur & " vs " & prv & " in " & FORMAT([Prior Month], "mmmm") & ").")
+		displayFolder: Insights
+		lineageTag: 617553e5-d23f-49d7-be99-c7cdeb38b7b1
+
+	measure 'Insight SLA' =
+			VAR d = [MoM SLA Change (pts)]
+			RETURN IF(ISBLANK(d), "Not enough monthly history in the current selection.", "SLA compliance " & IF(d >= 0, "improved", "declined") & " by " & FORMAT(ABS(d), "0.0") & " percentage points to " & FORMAT([Current Month SLA %], "0.0%") & " in " & FORMAT([Latest Month], "mmmm") & " (target " & FORMAT([SLA Target], "0%") & ").")
+		displayFolder: Insights
+		lineageTag: d25b18ba-deb8-417a-841e-f7ea38853570
+
+	measure 'Insight Breaches' =
+			VAR t = TOPN(1, ADDCOLUMNS(VALUES(Incidents[assignment_group]), "BreachCount", [SLA Breaches]), [BreachCount], DESC)
+			VAR grp = MAXX(t, Incidents[assignment_group])
+			VAR n = MAXX(t, [BreachCount])
+			RETURN IF(ISBLANK(n) || n = 0, "No SLA breaches in the current selection.", grp & " recorded the most SLA breaches: " & n & " (" & FORMAT(DIVIDE(n, [SLA Breaches]), "0%") & " of all breaches).")
+		displayFolder: Insights
+		lineageTag: 78fa0508-e918-4d2c-9e91-a31c0e0d95bd
+
+	measure 'Insight Demand' =
+			VAR t = TOPN(1, ADDCOLUMNS(VALUES(Incidents[caller_department]), "Vol", [Total Incidents]), [Vol], DESC)
+			VAR d = MAXX(t, Incidents[caller_department])
+			VAR n = MAXX(t, [Vol])
+			RETURN IF(ISBLANK(n), "No incidents in the current selection.", d & " generated the highest incident volume: " & n & " (" & FORMAT(DIVIDE(n, [Total Incidents]), "0.0%") & " of total).")
+		displayFolder: Insights
+		lineageTag: 8e8117ed-1355-4e52-82ed-fb600449e295
+
+	measure 'Insight Priority' =
+			VAR t = TOPN(1, FILTER(ADDCOLUMNS(VALUES(Priorities[priority]), "S", [SLA Met %]), NOT(ISBLANK([S]))), [S], ASC)
+			VAR p = MAXX(t, Priorities[priority])
+			VAR s = MAXX(t, [S])
+			RETURN IF(ISBLANK(s), "No SLA data in the current selection.", IF(s >= [SLA Target], "All priorities are at or above the " & FORMAT([SLA Target], "0%") & " SLA target.", p & " has the lowest SLA compliance at " & FORMAT(s, "0.0%") & ", " & FORMAT(([SLA Target] - s) * 100, "0.0") & " points below the " & FORMAT([SLA Target], "0%") & " target."))
+		displayFolder: Insights
+		lineageTag: bc2f8601-dbb9-4d55-ab7d-1c434ca15048
+
+	measure 'Insight Month' =
+			VAR t = TOPN(1, FILTER(ADDCOLUMNS(VALUES(Calendar[MonthStart]), "S", [SLA Met %]), NOT(ISBLANK([S]))), [S], ASC)
+			VAR mth = MAXX(t, Calendar[MonthStart])
+			VAR s = MAXX(t, [S])
+			RETURN IF(ISBLANK(s), "No SLA data in the current selection.", "Lowest monthly SLA compliance: " & FORMAT(mth, "mmmm yyyy") & " at " & FORMAT(s, "0.0%") & ".")
+		displayFolder: Insights
+		lineageTag: bef10254-cdeb-434d-8ca4-190560c25e2c
+
+	measure 'Insight Finding' = SWITCH(MAX(Insights[Order]), 1, [Insight Volume], 2, [Insight SLA], 3, [Insight Breaches], 4, [Insight Demand], 5, [Insight Priority], 6, [Insight Month])
+		displayFolder: Insights
+		lineageTag: d97f476c-d6ee-4903-8760-e0500f48d15b
+
+	measure 'Selection Text' =
+			VAR m = IF(ISFILTERED(Calendar[MonthLabel]), "Month: " & IF(COUNTROWS(VALUES(Calendar[MonthLabel])) > 3, COUNTROWS(VALUES(Calendar[MonthLabel])) & " months", CONCATENATEX(VALUES(Calendar[MonthLabel]), Calendar[MonthLabel], ", ", Calendar[MonthLabel], ASC)))
+			VAR p = IF(ISFILTERED(Priorities[priority]), "Priority: " & IF(COUNTROWS(VALUES(Priorities[priority])) > 3, COUNTROWS(VALUES(Priorities[priority])) & " priorities", CONCATENATEX(VALUES(Priorities[priority]), Priorities[priority], ", ", Priorities[priority], ASC)))
+			VAR d = IF(ISFILTERED(Incidents[caller_department]), "Department: " & IF(COUNTROWS(VALUES(Incidents[caller_department])) > 3, COUNTROWS(VALUES(Incidents[caller_department])) & " departments", CONCATENATEX(VALUES(Incidents[caller_department]), Incidents[caller_department], ", ", Incidents[caller_department], ASC)))
+			VAR g = IF(ISFILTERED(Incidents[assignment_group]), "Group: " & IF(COUNTROWS(VALUES(Incidents[assignment_group])) > 3, COUNTROWS(VALUES(Incidents[assignment_group])) & " groups", CONCATENATEX(VALUES(Incidents[assignment_group]), Incidents[assignment_group], ", ", Incidents[assignment_group], ASC)))
+			VAR c = IF(ISFILTERED(Incidents[category]), "Category: " & IF(COUNTROWS(VALUES(Incidents[category])) > 3, COUNTROWS(VALUES(Incidents[category])) & " categories", CONCATENATEX(VALUES(Incidents[category]), Incidents[category], ", ", Incidents[category], ASC)))
+			VAR s = IF(ISFILTERED(Incidents[state]), "Status: " & IF(COUNTROWS(VALUES(Incidents[state])) > 3, COUNTROWS(VALUES(Incidents[state])) & " statuses", CONCATENATEX(VALUES(Incidents[state]), Incidents[state], ", ", Incidents[state], ASC)))
+			VAR t = {(1, m), (2, p), (3, d), (4, g), (5, c), (6, s)}
+			VAR txt = CONCATENATEX(FILTER(t, [Value2] <> ""), [Value2], "   ·   ", [Value1], ASC)
+			RETURN IF(txt = "", "Showing: all incidents (no filters applied)", "FILTERED VIEW  →  " & txt & "   (" & FORMAT([Total Incidents], "#,0") & " incidents)")
+		displayFolder: Context
+		lineageTag: 6ecbd266-cc36-4688-b56d-5f734aa0a36c
+
+	measure 'Selection Color' = IF(LEFT([Selection Text], 8) = "FILTERED", "#F59E0B", "#8FA3BF")
+		displayFolder: Context
+		lineageTag: cb82b66c-6ee7-4ecb-8d9d-ea1f4efc75b9
+
+	measure 'Data Period' = "Data: " & FORMAT(CALCULATE(MIN(Incidents[opened_date]), REMOVEFILTERS()), "d mmm yyyy") & " – " & FORMAT(CALCULATE(MAX(Incidents[opened_date]), REMOVEFILTERS()), "d mmm yyyy") & "   ·   Last refreshed: " & FORMAT(MAX('Refresh Info'[Last Refresh]), "d mmm yyyy, hh:nn")
+		displayFolder: Context
+		lineageTag: dd3a3ffc-4eab-4981-866d-c623ca0720df
+
+	measure 'Status Volume' =
+			VAR gr = [MoM Incident Growth %]
+			RETURN IF(ISBLANK(gr), "Info", IF(gr <= 0, "On track", IF(gr <= 0.1, "Watch", "Action")))
+		displayFolder: Insights
+		lineageTag: cb86b69a-87b0-462a-ac6c-b4edc13de826
+
+	measure 'Status SLA' =
+			VAR s = [Current Month SLA %]
+			RETURN IF(ISBLANK(s), "Info", IF(s >= [SLA Target], "On track", IF(s >= [SLA Target] - 0.05, "Watch", "Action")))
+		displayFolder: Insights
+		lineageTag: c1b8e41b-73c3-4e20-bce2-d23090786aad
+
+	measure 'Status Breaches' =
+			VAR t = TOPN(1, ADDCOLUMNS(VALUES(Incidents[assignment_group]), "BreachCount", [SLA Breaches]), [BreachCount], DESC)
+			VAR grp = MAXX(t, Incidents[assignment_group])
+			VAR s = CALCULATE([SLA Met %], Incidents[assignment_group] = grp)
+			RETURN IF(ISBLANK(s), "Info", IF(s >= [SLA Target], "On track", IF(s >= [SLA Target] - 0.05, "Watch", "Action")))
+		displayFolder: Insights
+		lineageTag: 381c7601-40d8-4094-9d48-64eb782f1d21
+
+	measure 'Status Priority' =
+			VAR t = TOPN(1, FILTER(ADDCOLUMNS(VALUES(Priorities[priority]), "S", [SLA Met %]), NOT(ISBLANK([S]))), [S], ASC)
+			VAR s = MAXX(t, [S])
+			RETURN IF(ISBLANK(s), "Info", IF(s >= [SLA Target], "On track", IF(s >= [SLA Target] - 0.05, "Watch", "Action")))
+		displayFolder: Insights
+		lineageTag: 0750700e-3b2e-4e89-8ca7-197db408ed19
+
+	measure 'Status Month' =
+			VAR t = TOPN(1, FILTER(ADDCOLUMNS(VALUES(Calendar[MonthStart]), "S", [SLA Met %]), NOT(ISBLANK([S]))), [S], ASC)
+			VAR s = MAXX(t, [S])
+			RETURN IF(ISBLANK(s), "Info", IF(s >= [SLA Target], "On track", IF(s >= [SLA Target] - 0.05, "Watch", "Action")))
+		displayFolder: Insights
+		lineageTag: b4c0e165-3af1-4840-b0da-fcb5640d62f6
+
+	measure 'Insight Status' =
+			VAR k = SWITCH(MAX(Insights[Order]), 1, [Status Volume], 2, [Status SLA], 3, [Status Breaches], 4, "Info", 5, [Status Priority], 6, [Status Month])
+			RETURN SWITCH(k, "On track", "● On track", "Watch", "● Watch", "Action", "● Action", "● Info")
+		displayFolder: Insights
+		lineageTag: 7b1bd123-7b97-4026-bc56-408ba6691d99
+
+	measure 'Insight Status Color' =
+			VAR k = [Insight Status]
+			RETURN SWITCH(TRUE(), CONTAINSSTRING(k, "On track"), "#22C55E", CONTAINSSTRING(k, "Watch"), "#F59E0B", CONTAINSSTRING(k, "Action"), "#EF4444", "#60A5FA")
+		displayFolder: Colors
+		lineageTag: 40a347d0-5b63-4c75-b3e3-6d86fe40d70e
+
+	measure 'Breach Color' =
+			VAR s = [SLA Met %]
+			RETURN IF(ISBLANK(s), "#8FA3BF", IF(s >= [SLA Target], "#E6EDF7", IF(s >= [SLA Target] - 0.05, "#F59E0B", "#EF4444")))
+		displayFolder: Colors
+		lineageTag: a8a36695-23a0-41a0-a61c-b8898e085f31
+
+	column incident_id
+		dataType: string
+		lineageTag: 0dfa41e5-0d26-4df4-89e4-3e3ee7783ddf
+		summarizeBy: none
+		sourceColumn: incident_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column opened_at
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 9bb55a72-67d0-4043-9868-8c2a154c62ea
+		summarizeBy: none
+		sourceColumn: opened_at
+
+		variation Variation
+			isDefault
+			relationship: 1d1d109d-c8e1-4acf-b448-32bc4b9cdda7
+			defaultHierarchy: LocalDateTable_1c85f829-c2d2-460c-811a-07073d8f7c9e.'Date Hierarchy'
+
+		changedProperty = DataType
+
+		annotation SummarizationSetBy = Automatic
+
+	column resolved_at
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 9c1b7a12-0bb5-41b9-a7a0-cb0007ee7ab2
+		summarizeBy: none
+		sourceColumn: resolved_at
+
+		variation Variation
+			isDefault
+			relationship: 5a8300b0-1356-4fcc-84e3-6f886ef8dfe0
+			defaultHierarchy: LocalDateTable_79810f05-66d4-447f-a996-eaacb7e067ef.'Date Hierarchy'
+
+		changedProperty = DataType
+
+		annotation SummarizationSetBy = Automatic
+
+	column priority
+		dataType: string
+		lineageTag: 6749ee75-b8af-49f1-bd8b-5b45f3cef14d
+		summarizeBy: none
+		sourceColumn: priority
+
+		annotation SummarizationSetBy = Automatic
+
+	column category
+		dataType: string
+		lineageTag: 4efc0510-6056-4fee-8b95-ee255ca3067d
+		summarizeBy: none
+		sourceColumn: category
+
+		annotation SummarizationSetBy = Automatic
+
+	column subcategory
+		dataType: string
+		lineageTag: bc1831a0-1ac7-4af7-b791-4e6bbf946863
+		summarizeBy: none
+		sourceColumn: subcategory
+
+		annotation SummarizationSetBy = Automatic
+
+	column assignment_group
+		dataType: string
+		lineageTag: a08cb6ae-f17b-43b0-aa90-14567ff3499e
+		summarizeBy: none
+		sourceColumn: assignment_group
+
+		annotation SummarizationSetBy = Automatic
+
+	column assigned_to
+		dataType: string
+		lineageTag: adb1ec10-a4e2-4a9a-a64f-6de1ba259331
+		summarizeBy: none
+		sourceColumn: assigned_to
+
+		annotation SummarizationSetBy = Automatic
+
+	column caller_department
+		dataType: string
+		lineageTag: 28f55e89-d214-479b-810e-36ed980b1555
+		summarizeBy: none
+		sourceColumn: caller_department
+
+		annotation SummarizationSetBy = Automatic
+
+	column location
+		dataType: string
+		lineageTag: 930569b2-4771-46e6-9e3f-75422ce3cfff
+		summarizeBy: none
+		sourceColumn: location
+
+		annotation SummarizationSetBy = Automatic
+
+	column state
+		dataType: string
+		lineageTag: 42af579b-bc3b-493b-b7ec-414565a42b34
+		summarizeBy: none
+		sourceColumn: state
+
+		annotation SummarizationSetBy = Automatic
+
+	column reopen_count
+		dataType: int64
+		formatString: 0
+		lineageTag: 5af71099-f17d-41b3-bb9a-cd7c79d40dc9
+		summarizeBy: sum
+		sourceColumn: reopen_count
+
+		annotation SummarizationSetBy = Automatic
+
+	column resolution_hours
+		dataType: double
+		lineageTag: ed5a091a-3ec1-45fb-b74c-f35816fcd663
+		summarizeBy: sum
+		sourceColumn: resolution_hours
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column sla_met
+		dataType: int64
+		formatString: 0
+		lineageTag: eb90c6c1-55ea-41dc-aeef-5bd6347fbba7
+		summarizeBy: sum
+		sourceColumn: sla_met
+
+		annotation SummarizationSetBy = Automatic
+
+	column bad_dates
+		dataType: int64
+		formatString: 0
+		lineageTag: 19cb1304-b782-4ba5-bbb0-0464312831a7
+		summarizeBy: sum
+		sourceColumn: bad_dates
+
+		annotation SummarizationSetBy = Automatic
+
+	column opened_date
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 4aa11899-7751-4506-8688-bbfddcecb9e1
+		summarizeBy: none
+		sourceColumn: opened_date
+
+		variation Variation
+			isDefault
+			relationship: 4a2571fb-7055-4a70-aa6e-150766c70f2b
+			defaultHierarchy: LocalDateTable_672af70a-481a-4221-b2f2-6a4d8715b2a4.'Date Hierarchy'
+
+		changedProperty = DataType
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column opened_month
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: dc6a35aa-fd54-48b4-9971-675d0d9d88c8
+		summarizeBy: none
+		sourceColumn: opened_month
+
+		variation Variation
+			isDefault
+			relationship: c026890e-76eb-4592-8c3e-a71b34038cd7
+			defaultHierarchy: LocalDateTable_5a1e8cea-2588-4004-9596-07b76fb084f2.'Date Hierarchy'
+
+		changedProperty = DataType
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column is_open
+		dataType: int64
+		formatString: 0
+		lineageTag: 8bebf211-f3fd-4237-9239-baef107e113b
+		summarizeBy: sum
+		sourceColumn: is_open
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Incidents = m
+		mode: import
+		source =
+				let
+				    Source = Excel.Workbook(File.Contents("C:\Users\sathya\projects\opspulse-it-operations-platform\reports\opspulse_dashboard_data.xlsx"), null, true),
+				    Incidents_Sheet = Source{[Item="Incidents",Kind="Sheet"]}[Data],
+				    #"Promoted Headers" = Table.PromoteHeaders(Incidents_Sheet, [PromoteAllScalars=true]),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"incident_id", type text}, {"opened_at", type number}, {"resolved_at", type number}, {"priority", type text}, {"category", type text}, {"subcategory", type text}, {"assignment_group", type text}, {"assigned_to", type text}, {"caller_department", type text}, {"location", type text}, {"state", type text}, {"reopen_count", Int64.Type}, {"resolution_hours", type number}, {"sla_met", Int64.Type}, {"bad_dates", Int64.Type}, {"opened_date", Int64.Type}, {"opened_month", Int64.Type}, {"is_open", Int64.Type}})
+				in
+				    #"Changed Type"
+
+	annotation PBI_ResultType = Table
+

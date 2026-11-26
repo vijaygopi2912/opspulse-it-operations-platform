@@ -1,0 +1,29 @@
+model Model
+	culture: en-IN
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	sourceQueryCulture: en-IN
+	valueFilterBehavior: independent
+	dataAccessOptions
+		legacyRedirects
+		returnErrorValuesAsNull
+
+annotation __PBI_TimeIntelligenceEnabled = 1
+
+annotation PBI_QueryOrder = ["Groups","Incidents","Priorities"]
+
+annotation PBI_ProTooling = ["DevMode"]
+
+ref table Groups
+ref table Incidents
+ref table Priorities
+ref table DateTableTemplate_649f4542-22b3-4d78-8648-ad220b29df18
+ref table LocalDateTable_1c85f829-c2d2-460c-811a-07073d8f7c9e
+ref table LocalDateTable_79810f05-66d4-447f-a996-eaacb7e067ef
+ref table LocalDateTable_5a1e8cea-2588-4004-9596-07b76fb084f2
+ref table LocalDateTable_672af70a-481a-4221-b2f2-6a4d8715b2a4
+ref table Calendar
+ref table Insights
+ref table 'Refresh Info'
+
+ref cultureInfo en-IN
+

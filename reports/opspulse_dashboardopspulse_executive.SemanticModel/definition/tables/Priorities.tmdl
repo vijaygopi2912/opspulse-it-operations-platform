@@ -1,0 +1,33 @@
+table Priorities
+	lineageTag: 5fc9f84f-ba43-408e-bfb5-64a55c9cecec
+
+	column priority
+		dataType: string
+		lineageTag: 47ac9c24-d273-46cb-a3eb-dad1a872cc73
+		summarizeBy: none
+		sourceColumn: priority
+
+		annotation SummarizationSetBy = Automatic
+
+	column sla_target_hours
+		dataType: int64
+		formatString: 0
+		lineageTag: 637fffd7-5764-4f64-8ee5-3d60924d0f9d
+		summarizeBy: none
+		sourceColumn: sla_target_hours
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Priorities = m
+		mode: import
+		source =
+				let
+				    Source = Excel.Workbook(File.Contents("C:\Users\sathya\projects\opspulse-it-operations-platform\reports\opspulse_dashboard_data.xlsx"), null, true),
+				    Priorities_Sheet = Source{[Item="Priorities",Kind="Sheet"]}[Data],
+				    #"Promoted Headers" = Table.PromoteHeaders(Priorities_Sheet, [PromoteAllScalars=true]),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"priority", type text}, {"sla_target_hours", Int64.Type}})
+				in
+				    #"Changed Type"
+
+	annotation PBI_ResultType = Table
+

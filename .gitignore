@@ -221,3 +221,8 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Power BI project (PBIP) local files
+**/.pbi/localSettings.json
+**/.pbi/cache.abf
+reports/_old_visuals_backup/

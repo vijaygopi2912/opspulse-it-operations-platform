@@ -1,0 +1,35 @@
+table Calendar
+	lineageTag: d21cce61-df41-4027-a63b-68b77db0104b
+	dataCategory: Time
+
+	column Date
+		dataType: dateTime
+		isKey
+		formatString: dd mmm yyyy
+		lineageTag: 98e37122-99df-4ef9-ac9e-5476a37ecf5d
+		summarizeBy: none
+		sourceColumn: [Date]
+
+	column MonthStart
+		dataType: dateTime
+		formatString: mmm yyyy
+		lineageTag: b04a0fc6-2182-4d1d-bd30-8ecc07bdd104
+		summarizeBy: none
+		sourceColumn: [MonthStart]
+
+	column MonthLabel
+		dataType: string
+		lineageTag: 77f23e8e-6dc1-47d2-901e-b5a8ca75c69c
+		summarizeBy: none
+		sourceColumn: [MonthLabel]
+		sortByColumn: MonthStart
+
+	partition Calendar = calculated
+		mode: import
+		source =
+				ADDCOLUMNS(
+				    CALENDAR(DATE(YEAR(MIN(Incidents[opened_date])), 1, 1), EOMONTH(MAX(Incidents[opened_date]), 0)),
+				    "MonthStart", DATE(YEAR([Date]), MONTH([Date]), 1),
+				    "MonthLabel", FORMAT([Date], "mmm yy")
+				)
+

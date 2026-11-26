@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "Report",
+    "displayName": "opspulse_dashboardopspulse_executive"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "d9b890b0-261f-499d-bbe5-6a7b7a08dd34"
+  }
+}
