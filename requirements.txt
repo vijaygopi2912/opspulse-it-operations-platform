@@ -4,3 +4,6 @@ openpyxl==3.1.5
 matplotlib==3.11.2
 scikit-learn==1.9.1
 fastembed==0.9.1
+fastapi
+uvicorn
+pytest

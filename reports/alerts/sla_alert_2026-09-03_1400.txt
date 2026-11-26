@@ -1,0 +1,21 @@
+Subject: OPSPULSE SLA alert - 3 ticket(s) need action now (03 Sep 2026 14:00)
+
+Hello team,
+
+As of 03 Sep 2026 14:00, 3 open ticket(s) have reached at least 50% breach risk and can still be saved:
+
+  - INC101462 [P3 | Hardware] Service Desk / Aisha K: 26 min left, risk 80%
+      "hello it, there is a line of dead pixels on my display since yesterday. regards, faitma"
+      Routing check: this looks like a Desktop Support ticket; consider reassigning.
+  - INC100512 [P3 | Hardware] Service Desk / Maria L: 61 min left, risk 62%
+      "usb ports on the docking station stopped working since yesterday. please help. sent from m"
+      Routing check: this looks like a Desktop Support ticket; consider reassigning.
+  - INC101976 [P3 | Email] Service Desk / Rahul S: 74 min left, risk 62%
+      "Outlook is stuck on 'loading profile' since yesterday. Can someone take a look?"
+
+On track: 7 ticket(s) open and below the alert level.
+Already breached and still open: 113 (oldest open for 234 days).
+
+Suggested action: pick up the alerted tickets first, ordered by minutes left, and reassign any flagged by the routing check.
+
+OPSPULSE (automated, risk table learned from Jan-Aug 2026)

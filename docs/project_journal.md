@@ -5,6 +5,8 @@ fixed, the key results, and how to explain each part in an interview.
 
 - **GitHub:** https://github.com/vijaygopi2912/opspulse-it-operations-platform
 - **Project flowchart:** [docs/project_flowchart.html](project_flowchart.html) (open in a browser)
+- **Architecture:** [docs/architecture.png](architecture.png)
+- **LinkedIn post draft:** [docs/linkedin_post.md](linkedin_post.md)
 - **Whiteboard version of the flowchart:** https://claude.ai/artifact/1rKYDEFaeyFfCutVf2pjp1 (private to you until you share it)
 - **Power BI guide, DAX and validation report:** [docs/powerbi_dashboard_guide.md](powerbi_dashboard_guide.md)
 
@@ -219,6 +221,52 @@ saved. `src/sla_risk_prediction.py` learns from January to August and replays Se
 
 ---
 
+## Phase 11: SLA alerts and triage API
+
+- `src/opspulse_ai.py` loads every model once and answers three questions: triage a new ticket (category, priority,
+  team, similar tickets, likely fix, typical time, risk), the breach risk of a ticket still open, and every ticket
+  open at a given moment with its status (Alert, OK or Breached) plus a routing check.
+- `src/sla_alerts.py` replays any moment and writes an email-ready alert (`reports/alerts/`). Example, 3 Sep 2026
+  14:00: 3 tickets need action now (26 to 74 minutes left); two are Hardware tickets sitting with Service Desk,
+  flagged "consider reassigning to Desktop Support".
+- `src/api.py` is a FastAPI service: `GET /health`, `POST /triage`, `POST /risk`, `GET /alerts`. Run
+  `uvicorn api:app --app-dir src --port 8000` and open `http://127.0.0.1:8000/docs` to try it in the browser.
+- `tests/test_opspulse_ai.py`: automated checks (risk never falls as time passes, statuses, bad input rejected,
+  open-ticket counts match the data, triage returns a full answer). Run `python -m pytest -q`.
+
+---
+
+## Phase 12: demo web app
+
+`src/static/index.html` is a one-page app served by the API at `http://127.0.0.1:8000` (start it with
+`uvicorn api:app --app-dir src --port 8000`). No extra libraries and no internet: plain HTML, CSS and JavaScript
+calling the API.
+
+- **Triage a ticket:** type a ticket (or click an example) and get the category with confidence, priority and SLA
+  target, team (cross-checked with the team that fixed similar tickets), breach risk, the likely fix and the three
+  most similar past tickets.
+- **SLA risk check:** choose a priority and slide "hours open"; risk, status (OK, Alert, Breached), time left and SLA
+  time used update live.
+- **Alerts replay:** pick any moment; see how many tickets need action, are on track or have breached, with a
+  routing check on each alert.
+
+Screenshots: `reports/demo/` (taken in a test run).
+
+---
+
+## Phase 13: final polish
+
+- `docs/architecture.png` (from `docs/architecture.html`): the whole system in four layers.
+- `reports/demo/opspulse_demo.gif`: the demo app in action, shown at the top of the README.
+- README rewritten for recruiters: demo first, modules with status, architecture, results, accurate tech stack,
+  how to run, structure and roadmap.
+- `docs/linkedin_post.md`: a ready-to-paste announcement.
+
+**Status: v1 complete.** Optional next steps need a paid LLM API (ticket summaries, knowledge-base assistant,
+operations chat assistant) or a cloud account (deployment).
+
+---
+
 ## Concepts learned (plain English)
 
 | Term | Meaning |
@@ -238,6 +286,8 @@ saved. `src/sla_risk_prediction.py` learns from January to August and replays Se
 | Nearest neighbours | answering from the most similar past examples |
 | Clustering (K-Means) | grouping items that are alike without being told the groups |
 | AUC | how well a score ranks positives above negatives: 0.5 is a coin flip, 1.0 is perfect |
+| API | a way for other programs to ask your code questions over the network and get structured answers (JSON) |
+| Automated test | a small script that checks the code still gives the right answers after any change |
 | Time-based split | train on earlier months, test on later ones, as in real use |
 | Problem vs incident (ITIL) | an incident is one interruption; a problem is the underlying cause behind repeated incidents |
 | Precision / recall | of the items flagged, how many were right / of the real items, how many were caught |
@@ -259,7 +309,9 @@ saved. `src/sla_risk_prediction.py` learns from January to August and replays Se
    once, which points to a staffing or process cause rather than a single broken system."
 8. **Simple beats complex:** "For SLA breach prediction, a risk table of priority by time used scored AUC 0.74 on
    unseen months and beat machine learning (0.68), so I shipped the explainable rule."
-9. **Workforce:** "I found Service Desk technicians carry nearly twice the load of Desktop Support, and compared
+9. **Demo:** "Here's the app: I type a ticket and it returns category, priority, team, the likely fix from similar
+   past tickets and SLA risk, all from free models running on this laptop."
+10. **Workforce:** "I found Service Desk technicians carry nearly twice the load of Desktop Support, and compared
    technicians fairly by normalising resolution time against each ticket's SLA target."
 
 ---
@@ -283,16 +335,19 @@ python src/semantic_classifier.py
 python src/similar_tickets.py
 python src/root_cause_analysis.py
 python src/sla_risk_prediction.py
+python src/sla_alerts.py
+python -m pytest -q
 ```
 
 Then open `reports/opspulse_executive_dashboard_v2.pbix` (or the `.pbip` project) in Power BI Desktop.
 
 ---
 
-## Still to do (all free)
+## Optional next steps
 
-1. SLA alerts and a small API
-2. Demo web app
-3. Final polish: tests, architecture diagram, demo GIF, LinkedIn post
+All free steps are done. These need a paid LLM API or a cloud account:
 
-Optional later (paid): Claude-powered ticket summaries, an operations chat assistant and knowledge-base Q&A.
+1. AI ticket summaries
+2. Knowledge-base assistant (retrieval + LLM)
+3. Operations chat assistant
+4. Cloud deployment of the API and demo app

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>OPSPULSE architecture</title>
+<style>
+  body { margin:0; background:#0A1628; color:#E6EDF7; font-family:"Segoe UI", system-ui, sans-serif; }
+  .wrap { width:1360px; padding:28px 32px 26px; box-sizing:border-box; }
+  h1 { margin:0; font-size:26px; font-weight:700; }
+  h1 span { font-weight:400; color:#8FA3BF; }
+  .sub { color:#8FA3BF; font-size:14px; margin:6px 0 22px; }
+  .flow { display:grid; grid-template-columns:1fr 34px 1fr 34px 1.35fr 34px 1fr; align-items:stretch; }
+  .col { background:#10233F; border:1px solid #1B3556; border-radius:14px; padding:14px; }
+  .col h2 { margin:0 0 10px; font-size:13px; letter-spacing:.8px; text-transform:uppercase; color:#8FA3BF; font-weight:600; }
+  .box { background:#0D1E37; border:1px solid #1B3556; border-radius:10px; padding:9px 11px; margin-bottom:9px; }
+  .box:last-child { margin-bottom:0; }
+  .box b { display:block; font-size:14px; }
+  .box small { display:block; color:#8FA3BF; font-size:12px; margin-top:3px; line-height:1.35; }
+  .box code { font-family:Consolas, monospace; font-size:11.5px; color:#93C5FD; }
+  .ai { border-color:#2563EB; }
+  .ai b { color:#93C5FD; }
+  .out { border-left:3px solid #22C55E; border-radius:0 10px 10px 0; }
+  .arrow { display:flex; align-items:center; justify-content:center; color:#3B82F6; font-size:26px; }
+  .split { display:grid; grid-template-columns:1fr 1fr; gap:9px; }
+  .legend { display:flex; gap:22px; margin-top:16px; color:#8FA3BF; font-size:12px; }
+  .dot { display:inline-block; width:10px; height:10px; border-radius:3px; margin-right:6px; vertical-align:-1px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>OPSPULSE <span>| architecture</span></h1>
+  <div class="sub">From raw ITSM data to analytics, free local AI and a triage service. Everything runs on one laptop, at no cost.</div>
+  <div class="flow">
+    <div class="col">
+      <h2>1 · Data engineering</h2>
+      <div class="box"><b>Generate</b><small>3,060 synthetic incidents, deliberately messy</small><small><code>generate_data.py</code></small></div>
+      <div class="box"><b>Clean and validate</b><small>60 duplicates removed, 2 date formats, 28 bad dates flagged, SLA met / breached</small><small><code>clean_data.py</code></small></div>
+      <div class="box"><b>Realistic ticket text</b><small>user-style descriptions and resolution notes</small><small><code>generate_ticket_text.py</code></small></div>
+    </div>
+    <div class="arrow">&#10140;</div>
+    <div class="col">
+      <h2>2 · Storage</h2>
+      <div class="box"><b>SQLite database</b><small>normalised: incidents, priorities, assignment groups</small><small><code>schema.sql · load_database.py</code></small></div>
+      <div class="box"><b>Clean CSVs</b><small>incidents_clean.csv, tickets_with_text.csv</small></div>
+      <div class="box ai"><b>Meaning vectors</b><small>BGE-small embeddings, 384 numbers per ticket (fastembed, local)</small></div>
+      <div class="box"><b>Saved models</b><small>category, priority, SLA risk table</small><small><code>models/</code></small></div>
+    </div>
+    <div class="arrow">&#10140;</div>
+    <div class="col">
+      <h2>3 · Analytics and AI</h2>
+      <div class="split">
+        <div>
+          <div class="box"><b>SQL analytics</b><small>CTEs, window functions, workforce queries</small></div>
+          <div class="box"><b>Power BI model</b><small>date table, 52 DAX measures</small></div>
+          <div class="box"><b>Workforce analytics</b><small>capacity, fairness, SLA time used</small></div>
+          <div class="box"><b>Root cause analysis</b><small>28 problem groups, impact, spikes</small></div>
+        </div>
+        <div>
+          <div class="box ai"><b>Ticket classifier</b><small>94.9% category on unseen wording</small></div>
+          <div class="box ai"><b>Similar tickets</b><small>likely fix, team 89.2% correct</small></div>
+          <div class="box ai"><b>SLA risk table</b><small>AUC 0.74, beat ML (0.68)</small></div>
+          <div class="box ai"><b>Shared AI module</b><small>one place for every model</small><small><code>opspulse_ai.py</code></small></div>
+        </div>
+      </div>
+    </div>
+    <div class="arrow">&#10140;</div>
+    <div class="col">
+      <h2>4 · Delivery</h2>
+      <div class="box out"><b>Executive dashboard</b><small>one-page Power BI, live filter banner</small></div>
+      <div class="box out"><b>Monthly report</b><small>Excel + PDF in one command</small></div>
+      <div class="box out"><b>SLA alerts</b><small>email-ready, with routing check</small></div>
+      <div class="box out"><b>Triage API</b><small>FastAPI: /triage, /risk, /alerts</small></div>
+      <div class="box out"><b>Demo web app</b><small>triage, live risk, alerts replay</small></div>
+    </div>
+  </div>
+  <div class="legend">
+    <span><span class="dot" style="background:#0D1E37;border:1px solid #1B3556"></span>Data and analytics</span>
+    <span><span class="dot" style="background:#2563EB"></span>Free local AI</span>
+    <span><span class="dot" style="background:#22C55E"></span>What people use</span>
+    <span>Validated throughout: pandas = SQL = DAX · automated tests (pytest)</span>
+  </div>
+</div>
+</body>
+</html>

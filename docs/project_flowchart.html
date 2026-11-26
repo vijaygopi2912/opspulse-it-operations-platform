@@ -33,7 +33,7 @@
 </head>
 <body>
 <main>
-<h1>OPSPULSE: what we've built</h1>
+<h1>OPSPULSE: what we built</h1>
 <p class="lead">AI-powered IT operations intelligence portfolio project. Each step's output feeds the next one: the same 3,000 incidents, with the same numbers checked at every stage.</p>
 
 <div class="ph"><div class="hd"><span class="tag">Phase 1</span><span class="ttl">Setup</span></div>
@@ -83,8 +83,33 @@
 </div>
 <div class="ar">&darr;</div>
 
-<div class="ph next"><div class="hd"><span class="tag">Next</span><span class="ttl">Still to do (all free)</span></div>
-<div class="chips"><span class="chip">Similar tickets</span><span class="chip">Root cause analysis</span><span class="chip">SLA risk prediction</span><span class="chip">Alerts and API</span><span class="chip">Demo web app</span><span class="chip">Final polish</span></div>
+<div class="ph"><div class="hd"><span class="tag">Phase 8</span><span class="ttl">Similar tickets and fix suggestions</span></div>
+<div class="row"><div class="f">similar_tickets.py</div><div><div class="d">Searches resolved tickets by meaning; suggests team, likely fix and typical time</div><div class="k">Team right 89.2% (human routing 87.2%); closest ticket is the same problem 76.7%</div></div></div>
+</div>
+<div class="ar">&darr;</div>
+
+<div class="ph"><div class="hd"><span class="tag">Phase 9</span><span class="ttl">Root cause analysis</span></div>
+<div class="row"><div class="f">root_cause_analysis.py</div><div><div class="d">28 problem groups by meaning (no labels), impact ranking, spike and systemic checks</div><div class="k">March and August SLA fell in 25 of 28 groups: a systemic cause, not one fault</div></div></div>
+</div>
+<div class="ar">&darr;</div>
+
+<div class="ph"><div class="hd"><span class="tag">Phase 10</span><span class="ttl">SLA risk early warning</span></div>
+<div class="row"><div class="f">sla_risk_prediction.py</div><div><div class="d">Risk table of priority x SLA time used, tested on unseen months</div><div class="k">AUC 0.74, beat machine learning (0.68); warned about all 55 Sep-Oct breaches</div></div></div>
+</div>
+<div class="ar">&darr;</div>
+
+<div class="ph"><div class="hd"><span class="tag">Phase 11</span><span class="ttl">Alerts, API and tests</span></div>
+<div class="row"><div class="f">opspulse_ai.py · sla_alerts.py · api.py</div><div><div class="d">Shared AI module, email-ready alerts with routing check, FastAPI triage service</div><div class="k">pytest checks for risk logic, statuses, input validation and triage</div></div></div>
+</div>
+<div class="ar">&darr;</div>
+
+<div class="ph"><div class="hd"><span class="tag">Phase 12</span><span class="ttl">Demo app and final polish</span></div>
+<div class="row"><div class="f">static/index.html</div><div><div class="d">One-page app: triage a ticket, live SLA risk, alerts replay</div><div class="k">Demo GIF, architecture diagram, README rewrite, LinkedIn post</div></div></div>
+</div>
+<div class="ar">&darr;</div>
+
+<div class="ph next"><div class="hd"><span class="tag">Later</span><span class="ttl">Optional (needs a paid LLM API)</span></div>
+<div class="chips"><span class="chip">Ticket summaries</span><span class="chip">Knowledge-base assistant</span><span class="chip">Operations chat assistant</span><span class="chip">Cloud deployment</span></div>
 </div>
 
 <footer>Details, problems fixed and interview notes: docs/project_journal.md</footer>
