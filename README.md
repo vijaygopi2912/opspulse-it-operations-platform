@@ -108,6 +108,7 @@ OPSPULSE aims to address these challenges through a unified intelligence and aut
 | 8. Report | `src/generate_report.py` | One command produces a dated monthly management report: Excel workbook (summary, trend, priority and group performance, open backlog with ticket age, SLA breach list, charts) and a 2-page PDF with traffic-light findings |
 | 9. AI data | `src/generate_ticket_text.py` | Writes realistic, user-style ticket text (typos, urgency, misleading words); 12.3% of tickets were routed to the wrong team |
 | 10. AI classifier | `src/train_classifier.py`, `src/semantic_classifier.py` | Predicts category, priority and correct team; compares keyword ML with a free semantic AI model (BGE-small, runs locally) |
+| 11. Workforce | `sql/workforce.sql`, `src/workforce_analytics.py` | Technician scorecard, workload fairness and team capacity: Service Desk technicians carry 1.9x the load of Desktop Support |
 
 ### How to run
 
@@ -122,6 +123,7 @@ python src/run_query.py sql/analytics_advanced.sql
 python src/export_for_powerbi.py
 python src/generate_report.py                  # latest month
 python src/generate_report.py --month 2026-08  # any month
+python src/workforce_analytics.py              # technician workload and performance
 ```
 
 Reports are saved to `reports/output/` as `OPSPULSE_ITSM_Report_<YYYY-MM>.xlsx` and `.pdf`.
@@ -196,7 +198,7 @@ Then open `reports/opspulse_executive_dashboard_v2.pbix` in Power BI Desktop.
 - [x] SQL analytics engine
 - [x] SLA monitoring
 - [x] Power BI dashboard
-- [ ] Technician workload analysis
+- [x] Technician workload analysis
 - [x] Incident trend detection
 - [x] Automated reporting
 - [ ] SLA notification system
@@ -256,7 +258,7 @@ The objective is to demonstrate practical capabilities in:
 
 ## 11. Development Status
 
-**Current status: Phase 1 complete (data pipeline, SQL analytics, Power BI executive dashboard). Automated monthly reporting and a free AI ticket classifier (94.9% category accuracy on unseen wording) added. Next: workforce analytics and similar-ticket search.**
+**Current status: Phase 1 complete (data pipeline, SQL analytics, Power BI executive dashboard). Automated monthly reporting and a free AI ticket classifier (94.9% category accuracy on unseen wording) added. Workforce analytics added. Next: similar-ticket search and resolution suggestions.**
 
 This is an actively developed portfolio project. Features will be marked complete only after implementation and testing.
 
