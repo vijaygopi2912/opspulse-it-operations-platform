@@ -105,6 +105,7 @@ OPSPULSE aims to address these challenges through a unified intelligence and aut
 | 5. Analyse | `sql/analytics_basic.sql`, `sql/analytics_advanced.sql`, `src/run_query.py` | GROUP BY, JOINs, CTEs, window functions (LAG, running totals, RANK, ROW_NUMBER), HAVING |
 | 6. Export | `src/export_for_powerbi.py` | Writes the Power BI source workbook |
 | 7. Visualise | `reports/opspulse_executive_dashboard_v2.pbix` (+ `.pbip` project) | Power BI data model, date table, 50+ DAX measures, single-page executive dashboard |
+| 8. Report | `src/generate_report.py` | One command produces a dated monthly management report: Excel workbook (summary, trend, priority and group performance, open backlog with ticket age, SLA breach list, charts) and a 2-page PDF with traffic-light findings |
 
 ### How to run
 
@@ -117,7 +118,11 @@ python src/clean_data.py
 python src/load_database.py
 python src/run_query.py sql/analytics_advanced.sql
 python src/export_for_powerbi.py
+python src/generate_report.py                  # latest month
+python src/generate_report.py --month 2026-08  # any month
 ```
+
+Reports are saved to `reports/output/` as `OPSPULSE_ITSM_Report_<YYYY-MM>.xlsx` and `.pdf`.
 
 Then open `reports/opspulse_executive_dashboard_v2.pbix` in Power BI Desktop.
 
@@ -167,7 +172,7 @@ Then open `reports/opspulse_executive_dashboard_v2.pbix` in Power BI Desktop.
 - [x] Power BI dashboard
 - [ ] Technician workload analysis
 - [x] Incident trend detection
-- [ ] Automated reporting
+- [x] Automated reporting
 - [ ] SLA notification system
 - [x] Data pipeline
 - [ ] AI incident classification
@@ -225,7 +230,7 @@ The objective is to demonstrate practical capabilities in:
 
 ## 11. Development Status
 
-**Current status: Phase 1 complete (data pipeline, SQL analytics, Power BI executive dashboard). Next: automated reporting.**
+**Current status: Phase 1 complete (data pipeline, SQL analytics, Power BI executive dashboard). Automated monthly reporting added. Next: AI incident classification.**
 
 This is an actively developed portfolio project. Features will be marked complete only after implementation and testing.
 
