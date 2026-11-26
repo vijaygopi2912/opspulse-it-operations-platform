@@ -19,6 +19,27 @@ The platform aims to help IT operations teams analyse incidents, monitor Service
 
 The project simulates an enterprise IT environment and demonstrates how data analytics, Python automation, SQL, APIs and Generative AI can work together to solve real-world ITSM challenges.
 
+## Dashboard preview
+
+![OPSPULSE ITSM executive dashboard](reports/opspulse_executive_dashboard.png)
+
+Single-page Power BI executive dashboard: KPI cards with month-over-month change, monthly volume vs SLA against a 90% target,
+department and assignment-group analysis, SLA and resolution performance by priority, and management insights written
+automatically by DAX from whatever is selected. Details: [docs/powerbi_dashboard_guide.md](docs/powerbi_dashboard_guide.md).
+
+**Headline results (synthetic data, 3,000 incidents, Jan–Oct 2026)**
+
+| Metric | Value |
+|---|---|
+| SLA compliance | 88.5% (target 90%) |
+| SLA breaches | 326 |
+| Weakest priority | P1 at 77.3% SLA |
+| Weakest months | March 75.4%, August 77.1% |
+| Breach hotspot | Service Desk, 110 breaches (34%) |
+| Average resolution | 6.47 hours |
+
+Every dashboard figure was cross-checked against independent SQL queries on the same database.
+
 ## 2. Business Problem
 
 Enterprise IT departments handle large volumes of incidents and service requests.
@@ -73,7 +94,34 @@ OPSPULSE aims to address these challenges through a unified intelligence and aut
 - Microsoft Azure fundamentals
 - Git and GitHub
 
-## 5. Proposed Architecture
+## 5. What is built so far
+
+| Stage | Script / file | What it does |
+|---|---|---|
+| 1. Generate data | `src/generate_data.py` | Creates 3,000 realistic synthetic incidents with deliberate data-quality problems (duplicates, missing values, mixed date formats, inconsistent priority labels) |
+| 2. Explore | `src/explore_data.py` | Profiles shape, types and missing values |
+| 3. Clean | `src/clean_data.py` | Removes 60 duplicates, standardises priorities, parses both date formats, flags 28 invalid date rows, calculates resolution hours and SLA met/breached |
+| 4. Load | `sql/schema.sql`, `src/load_database.py` | Loads a normalised SQLite database (incidents, priorities, assignment groups) |
+| 5. Analyse | `sql/analytics_basic.sql`, `sql/analytics_advanced.sql`, `src/run_query.py` | GROUP BY, JOINs, CTEs, window functions (LAG, running totals, RANK, ROW_NUMBER), HAVING |
+| 6. Export | `src/export_for_powerbi.py` | Writes the Power BI source workbook |
+| 7. Visualise | `reports/opspulse_executive_dashboard_v2.pbix` (+ `.pbip` project) | Power BI data model, date table, 50+ DAX measures, single-page executive dashboard |
+
+### How to run
+
+```bash
+python -m venv .venv
+source .venv/Scripts/activate        # Windows Git Bash
+pip install -r requirements.txt
+python src/generate_data.py
+python src/clean_data.py
+python src/load_database.py
+python src/run_query.py sql/analytics_advanced.sql
+python src/export_for_powerbi.py
+```
+
+Then open `reports/opspulse_executive_dashboard_v2.pbix` in Power BI Desktop.
+
+## 6. Proposed Architecture
 
 ```text
         ITSM DATA SOURCES
@@ -110,18 +158,18 @@ OPSPULSE aims to address these challenges through a unified intelligence and aut
 
 *This represents the proposed architecture. Components will be implemented and validated progressively.*
 
-## 6. Development Roadmap
+## 7. Development Roadmap
 
-- [ ] Incident data foundation
-- [ ] Data cleaning and validation
-- [ ] SQL analytics engine
-- [ ] SLA monitoring
-- [ ] Power BI dashboard
+- [x] Incident data foundation
+- [x] Data cleaning and validation
+- [x] SQL analytics engine
+- [x] SLA monitoring
+- [x] Power BI dashboard
 - [ ] Technician workload analysis
-- [ ] Incident trend detection
+- [x] Incident trend detection
 - [ ] Automated reporting
 - [ ] SLA notification system
-- [ ] Data pipeline
+- [x] Data pipeline
 - [ ] AI incident classification
 - [ ] AI ticket summarisation
 - [ ] Knowledge-base assistant
@@ -133,34 +181,36 @@ OPSPULSE aims to address these challenges through a unified intelligence and aut
 - [ ] Platform integration and testing
 - [ ] Final demonstration and deployment
 
-## 7. Project Structure
+## 8. Project Structure
 
 ```text
 opspulse-it-operations-platform/
 │
 ├── data/
-├── sql/
-├── python/
-├── dashboard/
-├── ai_assistant/
-├── docs/
+│   ├── raw/            incidents_raw.csv (generated, with data-quality issues)
+│   └── processed/      incidents_clean.csv, opspulse.db (SQLite)
+├── src/                Python pipeline scripts
+├── sql/                schema and analytics queries
+├── reports/            Power BI dashboard (.pbix and .pbip project), source workbook, screenshots
+├── docs/               dashboard guide, DAX documentation, validation report
 ├── tests/
-├── screenshots/
 │
+├── requirements.txt
 ├── README.md
 ├── LICENSE
 └── .gitignore
 ```
 
-## 8. Data Privacy and Testing
+## 9. Data Privacy and Testing
 
-This project will use synthetic ITSM datasets for development and demonstration.
+This project uses synthetic ITSM datasets for development and demonstration. Patterns such as the March and August SLA dips
+were deliberately built into the generator so the analytics have something real to find; they are not findings about any real organisation.
 
 No confidential employer data, employee information, credentials or private enterprise records will be published.
 
 AI-generated recommendations will be treated as decision support and validated before being considered operationally reliable.
 
-## 9. Project Objective
+## 10. Project Objective
 
 The objective is to demonstrate practical capabilities in:
 
@@ -173,9 +223,9 @@ The objective is to demonstrate practical capabilities in:
 - Generative AI applications.
 - Intelligent IT Operations.
 
-## 10. Development Status
+## 11. Development Status
 
-**Current status: Initial project setup**
+**Current status: Phase 1 complete (data pipeline, SQL analytics, Power BI executive dashboard). Next: automated reporting.**
 
 This is an actively developed portfolio project. Features will be marked complete only after implementation and testing.
 
