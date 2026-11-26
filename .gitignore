@@ -226,3 +226,9 @@ __marimo__/
 **/.pbi/localSettings.json
 **/.pbi/cache.abf
 reports/_old_visuals_backup/
+
+# Files the Claude app saves into this folder
+Claude outputs/
+
+# Cached AI embeddings (recreated by semantic_classifier.py)
+data/processed/ticket_embeddings.npy

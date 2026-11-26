@@ -106,6 +106,8 @@ OPSPULSE aims to address these challenges through a unified intelligence and aut
 | 6. Export | `src/export_for_powerbi.py` | Writes the Power BI source workbook |
 | 7. Visualise | `reports/opspulse_executive_dashboard_v2.pbix` (+ `.pbip` project) | Power BI data model, date table, 50+ DAX measures, single-page executive dashboard |
 | 8. Report | `src/generate_report.py` | One command produces a dated monthly management report: Excel workbook (summary, trend, priority and group performance, open backlog with ticket age, SLA breach list, charts) and a 2-page PDF with traffic-light findings |
+| 9. AI data | `src/generate_ticket_text.py` | Writes realistic, user-style ticket text (typos, urgency, misleading words); 12.3% of tickets were routed to the wrong team |
+| 10. AI classifier | `src/train_classifier.py`, `src/semantic_classifier.py` | Predicts category, priority and correct team; compares keyword ML with a free semantic AI model (BGE-small, runs locally) |
 
 ### How to run
 
@@ -123,6 +125,30 @@ python src/generate_report.py --month 2026-08  # any month
 ```
 
 Reports are saved to `reports/output/` as `OPSPULSE_ITSM_Report_<YYYY-MM>.xlsx` and `.pdf`.
+
+AI ticket classifier (free, runs locally; the first run downloads a ~70 MB open-source model):
+
+```bash
+python src/generate_ticket_text.py
+python src/train_classifier.py
+python src/semantic_classifier.py
+```
+
+### AI ticket classifier results
+
+Tested on 623 tickets written in sentence patterns the models never saw in training:
+
+| Model | Category accuracy | Spots misrouted tickets |
+|---|---|---|
+| Keyword ML (TF-IDF + Logistic Regression) | 60.2% (100% on familiar wording) | catches 94%, but 3 in 4 flags are false alarms |
+| Semantic AI, zero-shot (no training tickets) | 84.6% | |
+| Semantic AI, trained (BGE-small embeddings + Logistic Regression) | **94.9%** | **catches 100%, 76% of flags correct** |
+
+Keyword matching memorises wording; meaning-based embeddings generalise to new phrasing. For priority the keyword model
+is better (70.3% vs 58.6%), because urgency lives in specific words like "urgent" or "no rush". The practical design is
+hybrid: semantic AI for category and routing, keywords for urgency.
+
+![Model comparison](reports/ai/model_comparison.png)
 
 Then open `reports/opspulse_executive_dashboard_v2.pbix` in Power BI Desktop.
 
@@ -175,7 +201,7 @@ Then open `reports/opspulse_executive_dashboard_v2.pbix` in Power BI Desktop.
 - [x] Automated reporting
 - [ ] SLA notification system
 - [x] Data pipeline
-- [ ] AI incident classification
+- [x] AI incident classification
 - [ ] AI ticket summarisation
 - [ ] Knowledge-base assistant
 - [ ] AI resolution recommendations
@@ -230,7 +256,7 @@ The objective is to demonstrate practical capabilities in:
 
 ## 11. Development Status
 
-**Current status: Phase 1 complete (data pipeline, SQL analytics, Power BI executive dashboard). Automated monthly reporting added. Next: AI incident classification.**
+**Current status: Phase 1 complete (data pipeline, SQL analytics, Power BI executive dashboard). Automated monthly reporting and a free AI ticket classifier (94.9% category accuracy on unseen wording) added. Next: workforce analytics and similar-ticket search.**
 
 This is an actively developed portfolio project. Features will be marked complete only after implementation and testing.
 

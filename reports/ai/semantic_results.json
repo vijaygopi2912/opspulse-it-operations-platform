@@ -1,0 +1,35 @@
+{
+  "category": {
+    "Keyword ML (TF-IDF)": {
+      "accuracy": 0.602,
+      "macro_f1": 0.583
+    },
+    "Semantic AI, zero-shot": {
+      "accuracy": 0.846,
+      "macro_f1": 0.846
+    },
+    "Semantic AI, trained": {
+      "accuracy": 0.949,
+      "macro_f1": 0.947
+    }
+  },
+  "priority": {
+    "Keyword ML (TF-IDF)": {
+      "accuracy": 0.703,
+      "macro_f1": 0.703
+    },
+    "Semantic AI, trained": {
+      "accuracy": 0.586,
+      "macro_f1": 0.536
+    }
+  },
+  "routing": {
+    "tickets_misrouted": 80,
+    "tickets_flagged": 106,
+    "precision": 0.755,
+    "recall": 1.0,
+    "group_accuracy": 0.949
+  },
+  "best_semantic_method": "Semantic AI, trained",
+  "embedding_model": "BAAI/bge-small-en-v1.5"
+}
